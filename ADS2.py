@@ -2,54 +2,87 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-#Bar graph 1
-Renewable_Electricity_Output= pd.read_excel("Renewable Electricity Output.xlsx")
-Renewable_Electricity_Output= Renewable_Electricity_Output.drop(['Series Name','Series Code','Country Code'], axis=1).dropna()
-Renewable_Electricity_Output_Transpose= Renewable_Electricity_Output.transpose()
-print(Renewable_Electricity_Output.set_index)
-width = .2
-plt.figure(figsize=(15,16))
-Years= ["1990 [YR1990]", "1995 [YR1995]", "2000 [YR2000]", "2005 [YR2005]", "2010 [YR2010]", "2015 [YR2015]"]
-X_axis = np.arange(len(Years))
-Renewable_Electricity_Output.plot(x = "Country Name" , y = Years, kind='bar')
-plt.title('Renewable electricity output (% of total electricity output)', fontsize=12)
-plt.xlabel('Countries', fontsize=7)
-plt.xticks(fontsize=7, rotation = 90)
-plt.ylabel('% of total electricity output', fontsize=7)
-plt.yticks(fontsize=7)
-plt.legend(frameon=False, fontsize=6)
-plt.savefig('REO Bargraph.png')
-plt.show()
+def read(file_name):
+    """
+    This function is for reading the excel dataset returning both the
+    data frame and its transpose.
+    
+    Returns
+    -------
+    Dataframes(original and transpose)
+    """    
+    data = pd.read_excel(file_name)
+    data = data.drop(['Series Name', 'Series Code',
+                     'Country Code'], axis=1).dropna()
+    data_transpose = data.transpose()
+    return data, data_transpose
 
-#Bar graph 2
-Renewable_Energy_Consumption= pd.read_excel("Renewable Energy Consumption.xlsx")
-Renewable_Energy_Consumption= Renewable_Energy_Consumption.drop(['Series Name','Series Code','Country Code'], axis=1).dropna()
-Renewable_Energy_Consumption_Transpose= Renewable_Energy_Consumption.transpose()
-print(Renewable_Energy_Consumption.set_index)
-width = .2
-plt.figure(figsize=(15,16))
-Years= ["1990 [YR1990]", "1995 [YR1995]", "2000 [YR2000]", "2005 [YR2005]", "2010 [YR2010]", "2015 [YR2015]"]
-X_axis = np.arange(len(Years))
-Renewable_Energy_Consumption.plot(x = "Country Name" , y = Years, kind='bar')
-plt.title('Renewable energy consumption (% of total final energy consumption)', fontsize=12)
-plt.xlabel('Countries', fontsize=7)
-plt.xticks(fontsize=7, rotation = 90)
-plt.ylabel('% of total final energy consumption', fontsize=7)
-plt.yticks(fontsize=7)
-plt.legend(frameon=False, fontsize=6)
-plt.savefig('REC Bargraph.png')
-plt.show() 
+def bar_plot(df_name, title, fig_name, y_label):
+    """
+    This function is for plotting the bar graph using the datas from the
+    returned dataframe.
+    
+    Returns
+    -------
+    None.
+    
+    """
+    plt.figure(figsize=(17, 18)) 
+    Years = ["1990 [YR1990]", "1995 [YR1995]", "2000 [YR2000]",
+             "2005 [YR2005]", "2010 [YR2010]", "2015 [YR2015]"]
+    df_name.plot(x="Country Name", y=Years, kind='bar')
+    plt.title(title, fontsize=12)
+    plt.xlabel('Countries', fontsize=5)
+    plt.xticks(fontsize=5, rotation=90)
+    plt.ylabel(y_label, fontsize=5)
+    plt.yticks(fontsize=5)
+    plt.legend(frameon=False, fontsize=6)
+    plt.savefig(fig_name, bbox_inches="tight", dpi=200)
+    plt.show()
+    
+def line_plot(df_name, title, fig_name, y_label):
+    """
+    This function is for plotting the line graph using the datas from the 
+    returned dataframe.
 
-#Line Graph 1
-Agricultural_Nitrous_Oxide_Emissions= pd.read_excel("Agricultural Nitrous Oxide Emissions.xlsx")
-Agricultural_Nitrous_Oxide_Emissions= Agricultural_Nitrous_Oxide_Emissions.drop(['Series Name','Series Code','Country Code'], axis=1).dropna()
-Agricultural_Nitrous_Oxide_Emissions= Agricultural_Nitrous_Oxide_Emissions.set_index("Country Name")
-Agricultural_Nitrous_Oxide_Emissions_Transpose= Agricultural_Nitrous_Oxide_Emissions.transpose()
-print(Agricultural_Nitrous_Oxide_Emissions.set_index)
+    Returns
+    -------
+    None.
 
-#Line Graph 2
-Cereal_Yield= pd.read_excel("Cereal Yield.xlsx")
-Cereal_Yield= Cereal_Yield.drop(['Series Name','Series Code','Country Code'], axis=1).dropna()
-Cereal_Yield= Cereal_Yield.set_index("Country Name")
-Cereal_Yield_Transpose= Cereal_Yield.transpose()
-print(Cereal_Yield.set_index)
+    """
+    plt.figure(figsize=(17, 18))
+    Years = ["1994 [YR1994]", "1998 [YR1998]", "2002 [YR2002]",
+             "2006 [YR2006]", "2010 [YR2010]", "2014 [YR2014]"]
+    df_name.plot(x="Country Name", y=Years, kind='line')
+    plt.title(title, fontsize=12)
+    plt.xlabel('Countries', fontsize=5)
+    plt.xticks(range(0, len(df_name.index)),
+               df_name["Country Name"], rotation=90)
+    plt.ylabel(y_label, fontsize=5)
+    plt.yticks(fontsize=5)
+    plt.legend(frameon=False, fontsize=6)
+    plt.savefig(fig_name, bbox_inches="tight", dpi=200)
+    plt.show()
+
+#Reading the excel file to get a return of dataframes.
+REO, REOT = read(
+    "Renewable Electricity Output.xlsx")
+REC, RECT = read(
+    "Renewable Energy Consumption.xlsx")
+ANOE, ANOET = read(
+    "Agricultural Nitrous Oxide Emissions.xlsx")
+CY, CYT = read("Cereal Yield.xlsx")
+
+#Calling the function for plotting the bar graph and the parameters are 
+#dataframe, title, fig name and the y label.
+bar_plot(REO, "Renewable electricity output",
+             "REO Bargraph.png", "% of total electricity output")
+bar_plot(REC, "Renewable energy consumption",
+             "REC Bargraph.png", "% of total final energy consumption")
+
+#Calling the function for plotting the line graph and the parameters are
+#dataframe, title, fig name and the y label.
+line_plot(ANOE, "Agricultural nitrous oxide emissions",
+              "ANOE Linegraph.png", "thousand metric tons of CO2 equivalent")
+line_plot(CY, "Cereal_yield (kg per hectare)",
+              "CY Linegraph.png", "kg per hectare")
